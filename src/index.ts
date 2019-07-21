@@ -13,6 +13,12 @@ class Entity {
   }
 }
 
+type Color = {
+  r: number;
+  g: number;
+  b: number;
+};
+
 let ctx: CanvasRenderingContext2D;
 var state: {
   entities: Entity[],
@@ -85,14 +91,25 @@ function simulate(dt: number) {
 function renderFrame() {
   ctx.fillStyle = `rgb(200, 200, 200)`;
   ctx.fillRect(0, 0, 500, 500);
+  let color = {r: 0.9, g: 0.1, b: 0.1};
   state.entities.forEach((entity) => {
-    drawCircle(ctx, {x: entity.x, y: entity.y, radius: entity.radius, r: 0.9, g: 0.1, b: 0.1});
+    state.entities.forEach((other) => {
+      if (entity !== other && overlapping(entity, other)) {
+        color = {r: 0.9, g: 0.9, b: 0.1};
+      }
+    });
+    drawCircle(ctx, {x: entity.x, y: entity.y, radius: entity.radius, color: color});
   })
 }
 
-function drawCircle(ctx: CanvasRenderingContext2D, params: {x: number, y:number, radius: number, r: number, g: number, b: number}) {
+function drawCircle(ctx: CanvasRenderingContext2D, params: {x: number, y:number, radius: number, color: Color}) {
   ctx.beginPath();
-  ctx.fillStyle = `rgb(${params.r*255}, ${params.g*255}, ${params.b*255})`;
+  ctx.fillStyle = `rgb(${params.color.r*255}, ${params.color.g*255}, ${params.color.b*255})`;
   ctx.arc(params.x, params.y, params.radius, 0, Math.PI * 2, true);
   ctx.fill();
+}
+
+function overlapping(entity1: Entity, entity2: Entity) {
+  let distance: number = Math.sqrt((entity1.x-entity2.x)**2 + (entity1.y-entity2.y)**2);
+  return distance < (entity1.radius + entity2.radius);
 }

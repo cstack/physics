@@ -69,14 +69,24 @@ function simulate(dt) {
 function renderFrame() {
     ctx.fillStyle = "rgb(200, 200, 200)";
     ctx.fillRect(0, 0, 500, 500);
+    var color = { r: 0.9, g: 0.1, b: 0.1 };
     state.entities.forEach(function (entity) {
-        drawCircle(ctx, { x: entity.x, y: entity.y, radius: entity.radius, r: 0.9, g: 0.1, b: 0.1 });
+        state.entities.forEach(function (other) {
+            if (entity !== other && overlapping(entity, other)) {
+                color = { r: 0.9, g: 0.9, b: 0.1 };
+            }
+        });
+        drawCircle(ctx, { x: entity.x, y: entity.y, radius: entity.radius, color: color });
     });
 }
 function drawCircle(ctx, params) {
     ctx.beginPath();
-    ctx.fillStyle = "rgb(" + params.r * 255 + ", " + params.g * 255 + ", " + params.b * 255 + ")";
+    ctx.fillStyle = "rgb(" + params.color.r * 255 + ", " + params.color.g * 255 + ", " + params.color.b * 255 + ")";
     ctx.arc(params.x, params.y, params.radius, 0, Math.PI * 2, true);
     ctx.fill();
+}
+function overlapping(entity1, entity2) {
+    var distance = Math.sqrt(Math.pow((entity1.x - entity2.x), 2) + Math.pow((entity1.y - entity2.y), 2));
+    return distance < (entity1.radius + entity2.radius);
 }
 //# sourceMappingURL=index.js.map
