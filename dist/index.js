@@ -1,4 +1,14 @@
 "use strict";
+var Entity = /** @class */ (function () {
+    function Entity(x, y, vx, vy, radius) {
+        this.x = x;
+        this.y = y;
+        this.vx = vx;
+        this.vy = vy;
+        this.radius = radius;
+    }
+    return Entity;
+}());
 var ctx;
 var state;
 function init() {
@@ -16,10 +26,10 @@ function init() {
     }
     ctx = c;
     state = {
-        x: 0,
-        y: 0,
-        vx: 50,
-        vy: 0,
+        entities: [
+            new Entity(0, 0, 20, 0, 10),
+            new Entity(100, 0, -10, 0, 20),
+        ],
         lastRender: 0,
     };
     mainLoop(0);
@@ -40,24 +50,28 @@ function mainLoop(timestamp) {
     renderFrame();
 }
 function simulate(dt) {
-    // gravity
-    state.vy += 3000 * dt;
-    // drag
-    state.vy *= (1 - 0.1 * dt);
-    state.vx *= (1 - 0.1 * dt);
-    // update position
-    state.x += state.vx * dt;
-    state.y += state.vy * dt;
-    // bounce
-    if (state.y > 500) {
-        state.y = 500;
-        state.vy *= -0.90;
-    }
+    state.entities.forEach(function (entity) {
+        // gravity
+        entity.vy += 3000 * dt;
+        // drag
+        entity.vy *= (1 - 0.1 * dt);
+        entity.vx *= (1 - 0.1 * dt);
+        // update position
+        entity.x += entity.vx * dt;
+        entity.y += entity.vy * dt;
+        // bounce
+        if (entity.y > 500) {
+            entity.y = 500;
+            entity.vy *= -0.90;
+        }
+    });
 }
 function renderFrame() {
     ctx.fillStyle = "rgb(200, 200, 200)";
     ctx.fillRect(0, 0, 500, 500);
-    drawCircle(ctx, { x: state.x, y: state.y, radius: 20, r: 0.9, g: 0.1, b: 0.1 });
+    state.entities.forEach(function (entity) {
+        drawCircle(ctx, { x: entity.x, y: entity.y, radius: entity.radius, r: 0.9, g: 0.1, b: 0.1 });
+    });
 }
 function drawCircle(ctx, params) {
     ctx.beginPath();
