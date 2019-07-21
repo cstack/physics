@@ -1,21 +1,38 @@
-var ctx = null;
-var state = {};
+let ctx: CanvasRenderingContext2D;
+var state: {
+  x: number,
+  y: number,
+  vx: number,
+  vy: number,
+  lastRender: number,
+};
 
 function init() {
-  var canvas = document.getElementById('canvas');
+  let canvas = <HTMLCanvasElement> document.getElementById('canvas');
+  if (!canvas) {
+    console.error(`Could not find an element with id 'canvas'`);
+    return;
+  }
   canvas.width = 500;
   canvas.height = 500;
-  ctx = canvas.getContext('2d');
-  state.x = 0;
-  state.y = 0;
-  state.vx = 50;
-  state.vy = 0;
-  state.lastRender = 0;
+  let c = canvas.getContext('2d');
+  if (!c) {
+    console.error(`Failed to get 2d context from canvas element`);
+    return;
+  }
+  ctx = c;
+  state = {
+    x: 0,
+    y: 0,
+    vx: 50,
+    vy: 0,
+    lastRender: 0,
+  }
 
-  mainLoop();
+  mainLoop(0);
 }
 
-function mainLoop(timestamp) {
+function mainLoop(timestamp: number) {
   if (timestamp > 10000) {
     return;
   } else {
@@ -32,7 +49,7 @@ function mainLoop(timestamp) {
   renderFrame();
 }
 
-function simulate(dt) {
+function simulate(dt: number) {
   // gravity
   state.vy += 3000*dt;
 
@@ -57,7 +74,7 @@ function renderFrame() {
   drawCircle(ctx, {x: state.x, y: state.y, radius: 20, r: 0.9, g: 0.1, b: 0.1});
 }
 
-function drawCircle(ctx, params) {
+function drawCircle(ctx: CanvasRenderingContext2D, params: {x: number, y:number, radius: number, r: number, g: number, b: number}) {
   ctx.beginPath();
   ctx.fillStyle = `rgb(${params.r*255}, ${params.g*255}, ${params.b*255})`;
   ctx.arc(params.x, params.y, params.radius, 0, Math.PI * 2, true);
