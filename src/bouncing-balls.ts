@@ -78,7 +78,7 @@ export default class BouncingBalls extends Simulation.Base {
       Render.circle(ctx, {x: entity.x, y: entity.y, radius: entity.radius, color: color});
     });
     for (let i = 0; i < state.entities.length; i++) {
-      for (let j = i+1; i < state.entities.length; j++) {
+      for (let j = i+1; j < state.entities.length; j++) {
         let e1 = state.entities[i];
         let e2 = state.entities[j];
         let normalVector = Simulation.direction(e1, e2);
