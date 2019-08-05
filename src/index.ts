@@ -1,4 +1,4 @@
-const SIMULATION_SPEED = 1;
+import * as Simulation from './simulation';
 
 class Entity {
   x: number;
@@ -75,7 +75,7 @@ function mainLoop(timestamp: number) {
   state.lastRender = timestamp;
 
   state.t = timestamp;
-  simulate(dt * SIMULATION_SPEED);
+  simulate(dt * Simulation.SIMULATION_SPEED);
   renderFrame();
 }
 
@@ -190,3 +190,5 @@ function direction(from: Entity, to: Entity) {
 function scale(vector: Vector, scale: number) {
   return {x: vector.x*scale, y: vector.y*scale}
 }
+
+window.onload=init;
