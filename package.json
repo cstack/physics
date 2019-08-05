@@ -3,6 +3,6 @@
     "typescript": "^3.5.3"
   },
   "scripts": {
-    "build": "tsc && webpack compiled/*.js -o public/index.js --mode=production",
+    "build": "tsc && webpack compiled/*.js -o public/index.js -d"
   }
 }
